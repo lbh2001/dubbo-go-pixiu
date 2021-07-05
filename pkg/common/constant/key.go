@@ -29,6 +29,7 @@ const (
 	RecoveryFilter           = "dgp.filters.recovery"
 	ResponseFilter           = "dgp.filters.response"
 	AccessLogFilter          = "dgp.filters.access_log"
+	RateLimitFilter          = "dgp.filters.rate_limit"
 )
 
 const (

@@ -89,20 +89,21 @@ func NewDubboClient() *Client {
 
 // Init init dubbo, config mapping can do here
 func (dc *Client) Init() error {
-	dc.GenericServicePool = make(map[string]*dg.GenericService, 4)
+	staticResources := config.GetBootstrap().StaticResources
+	cls := staticResources.Clusters
+	tc := staticResources.TimeoutConfig
 
-	cls := config.GetBootstrap().StaticResources.Clusters
-
-	// dubbogo comsumer config
+	// dubbogo consumer config
 	dgCfg = dg.ConsumerConfig{
 		Check:      new(bool),
 		Registries: make(map[string]*dg.RegistryConfig, 4),
 	}
+	// timeout config
+	dgCfg.Connect_Timeout = tc.ConnectTimeoutStr
+	dgCfg.Request_Timeout = tc.RequestTimeoutStr
 	dgCfg.ApplicationConfig = defaultApplication
 	for i := range cls {
 		c := cls[i]
-		dgCfg.Request_Timeout = c.RequestTimeoutStr
-		dgCfg.Connect_Timeout = c.ConnectTimeoutStr
 		for k, v := range c.Registries {
 			if len(v.Protocol) == 0 {
 				logger.Warnf("can not find registry protocol config, use default type 'zookeeper'")
@@ -141,12 +142,12 @@ func (dc *Client) Close() error {
 // Call invoke service
 func (dc *Client) Call(req *client.Request) (res interface{}, err error) {
 	values, err := dc.genericArgs(req)
+	if err != nil {
+		return nil, err
+	}
 	val, ok := values.(*dubboTarget)
 	if !ok {
 		return nil, errors.New("map parameters failed")
-	}
-	if err != nil {
-		return nil, err
 	}
 
 	dm := req.API.Method.IntegrationRequest
@@ -259,7 +260,9 @@ func (dc *Client) create(key string, irequest fc.IntegrationRequest) *dg.Generic
 	dc.lock.Lock()
 	defer dc.lock.Unlock()
 	referenceConfig.GenericLoad(key)
-	time.Sleep(200 * time.Millisecond) // sleep to wait invoker create
+	//TODO: fix it later
+	// sleep to wait invoker create
+	time.Sleep(500 * time.Millisecond)
 	clientService := referenceConfig.GetRPCService().(*dg.GenericService)
 
 	dc.GenericServicePool[key] = clientService

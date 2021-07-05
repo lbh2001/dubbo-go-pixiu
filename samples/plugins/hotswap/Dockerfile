@@ -16,31 +16,13 @@
 # specific language governing permissions and limitations
 # under the License.
 #
----
-static_resources:
-  listeners:
-    - name: "net/http"
-      address:
-        socket_address:
-          protocol_type: "HTTP"
-          address: "0.0.0.0"
-          port: 8881
-      config:
-        idle_timeout: 5s
-        read_timeout: 5s
-        write_timeout: 5s
-  clusters:
-    - name: "test_dubbo"
-      lb_policy: "RoundRobin"
-      connect_timeout: "5s"
-      request_timeout: "10s"
-      registries:
-        "zookeeper":
-          timeout: "3s"
-          address: "127.0.0.1:2181"
-          username: ""
-          password: ""
-  shutdown_config:
-    timeout: "60s"
-    step_timeout: "10s"
-    reject_policy: "immediacy"
+FROM golang:1.14
+
+ENV HOME /go/src
+ENV GOPROXY https://goproxy.cn
+
+WORKDIR ${HOME}
+
+COPY .. ${HOME}
+
+CMD ["/bin/bash", "start.sh"]

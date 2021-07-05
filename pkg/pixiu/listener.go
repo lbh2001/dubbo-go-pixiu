@@ -107,7 +107,7 @@ func (l *ListenerService) findHttpManager() model.HttpConnectionManager {
 	for _, fc := range l.FilterChains {
 		for _, f := range fc.Filters {
 			if f.Name == constant.HTTPConnectManagerFilter {
-				return *f.Config.(*model.HttpConnectionManager)
+				return f.Config.(model.HttpConnectionManager)
 			}
 		}
 	}
@@ -155,6 +155,8 @@ func addFilter(ctx *h.HttpContext, api router.API) {
 	if alc.Enable {
 		ctx.AppendFilterFunc(extension.GetMustFilterFunc(constant.AccessLogFilter))
 	}
+	ctx.AppendFilterFunc(extension.GetMustFilterFunc(constant.RateLimitFilter))
+
 	switch api.Method.IntegrationRequest.RequestType {
 	// TODO add some basic filter for diff protocol
 	case fc.DubboRequest:
