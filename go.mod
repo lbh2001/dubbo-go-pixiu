@@ -15,13 +15,14 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/hashicorp/consul/api v1.5.0
+	github.com/mitchellh/mapstructure v1.4.1
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/common v0.29.0 // indirect
 	github.com/shirou/gopsutil v3.21.3+incompatible // indirect
 	github.com/spf13/cast v1.3.1
+	github.com/spf13/cobra v1.1.1
 	github.com/stretchr/testify v1.7.0
 	github.com/tklauser/go-sysconf v0.3.5 // indirect
-	github.com/urfave/cli v1.22.4
 	go.etcd.io/etcd v0.0.0-20200402134248-51bdeb39e698 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.0-alpha.0
 	go.opentelemetry.io/otel v1.0.0-RC1
